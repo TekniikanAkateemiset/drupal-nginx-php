@@ -1,0 +1,5 @@
+docker-mount
+.git
+vendor
+shared
+docker-compose
