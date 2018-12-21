@@ -1,7 +1,14 @@
 docker-mount
 .git
-vendor
+**/vendor
 shared
 docker-compose
-conf/database
-*.sql
+*/**/default/services.yml
+*/*/default/settings.php
+**/sites/*/files/
+**/sites/**/private
+**/sites/**/twig
+**/modules/contrib
+**/core
+# Ignore configuration files that may contain sensitive information.
+**/sites/*/*settings*.php
