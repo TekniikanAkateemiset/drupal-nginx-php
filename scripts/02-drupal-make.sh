@@ -53,14 +53,13 @@ elif [ -f $SETTINGS_TEMPLATE ]; then
   file_env 'DRUPAL_DATABASE_PASSWORD' 'drupal'
   file_env 'DRUPAL_DATABASE_HOST' 'db'
   file_env 'DRUPAL_HASH_SALT'
+  file_env 'DRUPAL_ENV' 'production'
 
   # Replace all placeholders from template.
-  envsubst '$$DRUPAL_DATABASE $$DRUPAL_DATABASE_USER $$DRUPAL_DATABASE_PASSWORD $$DRUPAL_DATABASE_HOST $$DRUPAL_HASH_SALT'< $SETTINGS_TEMPLATE > $SETTINGS_LOCATION
+  envsubst '$$DRUPAL_DATABASE $$DRUPAL_DATABASE_USER $$DRUPAL_DATABASE_PASSWORD $$DRUPAL_DATABASE_HOST $$DRUPAL_HASH_SALT $$DRUPAL_ENV'< $SETTINGS_TEMPLATE > $SETTINGS_LOCATION
 
   echo "Copied settings.php to drupal"
 
-
-  # Make sure settings.php has proper permissions
   chmod 440 $SETTINGS_LOCATION
   echo "Set proper permissions for settings.php"
 
@@ -71,7 +70,9 @@ elif [ -f $SETTINGS_TEMPLATE ]; then
   # Copy services file to right location
   cp $SERVICES_TEMPLATE $SERVICES_LOCATION
   echo "Copied servies.yml to $SERVICES_LOCATION"
+
   chown nobody:nginx $SERVICES_LOCATION
+
   chmod 440 $SERVICES_LOCATION
   echo "Set file permissions for services.yml"
 

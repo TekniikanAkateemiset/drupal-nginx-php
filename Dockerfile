@@ -20,12 +20,3 @@ RUN apk add --no-cache \
 COPY conf/nginx /var/www/html/conf/nginx
 COPY conf/drupal /var/www/html/conf/drupal
 COPY scripts /var/www/html/scripts
-COPY src $PROJECT_DIR
-
-WORKDIR $PROJECT_DIR
-RUN composer install
-
-# Set directory permissions
-RUN chown -R nobody:nginx /var/www/html/src/web
-RUN chown -R nobody:nginx /var/www/html/src/vendor
-RUN chmod -R o-xr /var/www/html/src/web

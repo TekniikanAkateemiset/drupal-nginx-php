@@ -3,3 +3,4 @@ docker-mount
 vendor
 shared
 docker-compose
+conf/database
