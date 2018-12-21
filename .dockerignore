@@ -4,3 +4,4 @@ vendor
 shared
 docker-compose
 conf/database
+*.sql
