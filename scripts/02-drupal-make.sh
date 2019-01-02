@@ -1,27 +1,39 @@
 #!/usr/bin/env bash
+#@todo Refactor this to python script.
+
 source /var/www/html/scripts/00-tools.sh
 
 CODEBASE="/var/www/html/"
 DRUPAL_CONF_FILES="/var/www/html/conf/drupal"
 
-if [ -n "$ENVIRONMENT" ]; then
-  SETTINGS_TEMPLATE_FILE="settings.$ENVIRONMENT.php"
-  SERVICES_TEMPLATE_FILE="services.$ENVIRONMENT.yml"
-else
-  SETTINGS_TEMPLATE_FILE="settings.php"
-  SERVICES_TEMPLATE_FILE="services.yml"
-fi
+SETTINGS_TEMPLATE_FILE="settings.php"
+SERVICES_TEMPLATE_FILE="services.yml"
 
-echo $SETTINGS_TEMPLATE_FILE;
+DRUPAL_DEFAULT_DIR="$WEBROOT/sites/default"
+
 SETTINGS_TEMPLATE="$DRUPAL_CONF_FILES/$SETTINGS_TEMPLATE_FILE"
-SETTINGS_LOCATION="$WEBROOT/sites/default/settings.php"
-echo $SETTINGS_TEMPLATE
+SETTINGS_LOCATION="$DRUPAL_DEFAULT_DIR/settings.php"
 
 SERVICES_TEMPLATE="$DRUPAL_CONF_FILES/$SERVICES_TEMPLATE_FILE"
-SERVICES_LOCATION="$WEBROOT/sites/default/services.yml"
+SERVICES_LOCATION="$DRUPAL_DEFAULT_DIR/services.yml"
+
 
 echo $SERVICES_LOCATION
-echo $ENVIRONMENT
+
+if [ -n "$ENVIRONMENT" ]; then
+  ENV_SETTINGS="$DRUPAL_CONF_FILES/settings.$ENVIRONMENT.php"
+  ENV_SERVICES="$DRUPAL_CONF_FILES/services.$ENVIRONMENT.php"
+
+  if [ -f $ENV_SETTINGS ]; then
+    cp $ENV_SETTINGS $DRUPAL_DEFAULT_DIR
+  fi
+
+  if [ -f $ENV_SERVICES ]; then
+    cp $ENV_SETTINGS $DRUPAL_DEFAULT_DIR
+  fi
+
+fi
+
 if [ -n "$ENVIRONMENT" ] && [ "$ENVIRONMENT"="local" ]; then
   while [ ! -d $CODEBASE ]; do
       echo "Waiting for codebase to be mounted"
@@ -38,8 +50,8 @@ fi
 echo "Starting to copy on settings.php"
 
 if [ -n "$DRUPAL_INIT" ] && [ $DRUPAL_INIT -eq 1 ]; then
-  cp $WEBROOT/sites/default/default.settings.php $SETTINGS_LOCATION
-  cp $WEBROOT/sites/default/default.services.yml $SERVICES_LOCATION
+  cp $DRUPAL_DEFAULT_DIR/default.settings.php $SETTINGS_LOCATION
+  cp $DRUPAL_DEFAULT_DIR/default.services.yml $SERVICES_LOCATION
   echo "Created settings.php from default.settings.php"
 
   # Make sure settings.php has proper permissions
@@ -53,10 +65,11 @@ elif [ -f $SETTINGS_TEMPLATE ]; then
   file_env 'DRUPAL_DATABASE_PASSWORD' 'drupal'
   file_env 'DRUPAL_DATABASE_HOST' 'db'
   file_env 'DRUPAL_HASH_SALT'
-  file_env 'DRUPAL_ENV' 'production'
+  file_env 'ENVIRONMENT' 'production'
+  file_env 'DRUPAL_TRUSTED_HOST_PATTERNS' 'localhost'
 
   # Replace all placeholders from template.
-  envsubst '$$DRUPAL_DATABASE $$DRUPAL_DATABASE_USER $$DRUPAL_DATABASE_PASSWORD $$DRUPAL_DATABASE_HOST $$DRUPAL_HASH_SALT $$DRUPAL_ENV'< $SETTINGS_TEMPLATE > $SETTINGS_LOCATION
+  envsubst '$$DRUPAL_DATABASE $$DRUPAL_DATABASE_USER $$DRUPAL_DATABASE_PASSWORD $$DRUPAL_DATABASE_HOST $$DRUPAL_HASH_SALT $$DRUPAL_ENV $$DRUPAL_TRUSTED_HOST_PATTERNS'< $SETTINGS_TEMPLATE > $SETTINGS_LOCATION
 
   echo "Copied settings.php to drupal"
 
@@ -77,7 +90,7 @@ elif [ -f $SETTINGS_TEMPLATE ]; then
   echo "Set file permissions for services.yml"
 
   echo "Set chmod 755 for sites/default"
-  chmod 755 $WEBROOT/sites/default
+  chmod 755 $DRUPAL_DEFAULT_DIR
 fi
 
 # Run through all the usual drush commands

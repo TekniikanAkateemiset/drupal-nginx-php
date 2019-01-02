@@ -681,7 +681,7 @@ $settings['container_yamls'][] = __DIR__ . '/services.yml';
  * For example:
  * @code
  */
-$settings['trusted_host_patterns'] = array();
+$settings['trusted_host_patterns'] = array(${DRUPAL_TRUSTED_HOST_PATTERNS});
 /*
  * @endcode
  * will allow the site to only run from www.example.com.
