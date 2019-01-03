@@ -717,7 +717,7 @@ $settings['trusted_host_patterns'] = array(${DRUPAL_TRUSTED_HOST_PATTERNS});
 # if (file_exists(__DIR__ . '/settings.local.php')) {
 #   include __DIR__ . '/settings.local.php';
 # }
-$config['drupal_env'] = '${DRUPAL_ENV}';
+$config['drupal_env'] = '${ENVIRONMENT}';
 
 $databases['default']['default'] = array (
   'database' => '${DRUPAL_DATABASE}',
