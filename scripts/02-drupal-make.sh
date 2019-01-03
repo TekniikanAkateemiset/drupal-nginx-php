@@ -69,7 +69,7 @@ elif [ -f $SETTINGS_TEMPLATE ]; then
   file_env 'DRUPAL_TRUSTED_HOST_PATTERNS' 'localhost'
 
   # Replace all placeholders from template.
-  envsubst '$$DRUPAL_DATABASE $$DRUPAL_DATABASE_USER $$DRUPAL_DATABASE_PASSWORD $$DRUPAL_DATABASE_HOST $$DRUPAL_HASH_SALT $$DRUPAL_ENV $$DRUPAL_TRUSTED_HOST_PATTERNS'< $SETTINGS_TEMPLATE > $SETTINGS_LOCATION
+  envsubst '$$DRUPAL_DATABASE $$DRUPAL_DATABASE_USER $$DRUPAL_DATABASE_PASSWORD $$DRUPAL_DATABASE_HOST $$DRUPAL_HASH_SALT $$ENVIRONMENT $$DRUPAL_TRUSTED_HOST_PATTERNS'< $SETTINGS_TEMPLATE > $SETTINGS_LOCATION
 
   echo "Copied settings.php to drupal"
 
@@ -90,7 +90,7 @@ elif [ -f $SETTINGS_TEMPLATE ]; then
   echo "Set file permissions for services.yml"
 
   echo "Set chmod 755 for sites/default"
-  chmod 755 $DRUPAL_DEFAULT_DIR
+  chmod 750 $DRUPAL_DEFAULT_DIR
 fi
 
 # Run through all the usual drush commands
